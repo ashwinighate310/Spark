@@ -1,0 +1,10 @@
+Using Spark SQl Zomato global dataset has been analyzed
+Features included in this is 
+  HiveContext
+  Hive Explode function for complex datatype
+  converting existing RDDs into Dataset
+  query the file directly with SQL
+  Importing a csv file having quotes and comma as delimiter
+  DataFrames saved as persistent tables into Hive metastore
+  Hive Window analytical Function 
+  and many more :)
