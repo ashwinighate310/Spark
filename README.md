@@ -1,7 +1,7 @@
-# This folder covers how Data can be wrangled, cleaned and analysed using Spark and its libraries
-# Real world data has been picked for the data analysis to understand the complexity and how to tackle it.
+This folder covers how Data can be wrangled, cleaned and analysed using Spark and its libraries
+Real world data has been picked for the data analysis to understand the complexity and how to tackle it.
 
-Features included in this is 
+# Features included in this is 
   HiveContext
   Hive Explode function for complex datatype
   converting existing RDDs into Dataset
