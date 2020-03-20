@@ -1,0 +1,101 @@
+{
+	"id": "application_1583329691976_44042",
+	"user": "developer",
+	"name": "HIVE-1d5f0367-4e9f-48c4-93a1-820ef1fac4d0",
+	"queue": "yarn-developer-haas_sit",
+	"state": "RUNNING",
+	"finalStatus": "UNDEFINED",
+	"progress": 0.0,
+	"trackingUI": "ApplicationMaster",
+	"trackingUrl": "http://.com:8088/proxy/application_1583329691976_44042/",
+	"diagnostics": "",
+	"clusterId": 1583329691976,
+	"applicationType": "TEZ",
+	"applicationTags": "",
+	"priority": 0,
+	"startedTime": 1583480928091,
+	"finishedTime": 0,
+	"elapsedTime": 485145,
+	"amContainerLogs": "http://globalserver008.com:8042/node/containerlogs/container_e463_1583329691976_44042_01_000001/developer",
+	"amHostHttpAddress": "globalserver008.com:8042",
+	"allocatedMB": 1024,
+	"allocatedVCores": 1,
+	"runningContainers": 1,
+	"memorySeconds": 1334702,
+	"vcoreSeconds": 644,
+	"queueUsagePercentage": 1.142258,
+	"clusterUsagePercentage": 0.007767292,
+	"preemptedResourceMB": 0,
+	"preemptedResourceVCores": 0,
+	"numNonAMContainerPreempted": 0,
+	"numAMContainerPreempted": 0,
+	"resourceRequests": [{
+		"capability": {
+			"memory": 1024,
+			"memorySize": 1024,
+			"virtualCores": 1
+		},
+		"nodeLabelExpression": "",
+		"numContainers": 0,
+		"priority": {
+			"priority": 0
+		},
+		"relaxLocality": true,
+		"resourceName": "*"
+	}, {
+		"capability": {
+			"memory": 5120,
+			"memorySize": 5120,
+			"virtualCores": 1
+		},
+		"nodeLabelExpression": "",
+		"numContainers": 0,
+		"priority": {
+			"priority": 2
+		},
+		"relaxLocality": true,
+		"resourceName": "/default-rack"
+	}, {
+		"capability": {
+			"memory": 5120,
+			"memorySize": 5120,
+			"virtualCores": 1
+		},
+		"nodeLabelExpression": "",
+		"numContainers": 0,
+		"priority": {
+			"priority": 2
+		},
+		"relaxLocality": true,
+		"resourceName": "*"
+	}, {
+		"capability": {
+			"memory": 5120,
+			"memorySize": 5120,
+			"virtualCores": 1
+		},
+		"nodeLabelExpression": "",
+		"numContainers": 0,
+		"priority": {
+			"priority": 2
+		},
+		"relaxLocality": true,
+		"resourceName": "globalserver005.com"
+	}, {
+		"capability": {
+			"memory": 5120,
+			"memorySize": 5120,
+			"virtualCores": 1
+		},
+		"nodeLabelExpression": "",
+		"numContainers": 0,
+		"priority": {
+			"priority": 5
+		},
+		"relaxLocality": true,
+		"resourceName": "*"
+	}],
+	"logAggregationStatus": "NOT_START",
+	"unmanagedApplication": false,
+	"amNodeLabelExpression": ""
+}
