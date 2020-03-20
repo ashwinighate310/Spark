@@ -7,7 +7,7 @@
 	"finalStatus": "UNDEFINED",
 	"progress": 0.0,
 	"trackingUI": "ApplicationMaster",
-	"trackingUrl": "http://.com:8088/proxy/application_1583329691976_44042/",
+	"trackingUrl": "http://yarnserver01.com:8088/proxy/application_1583329691976_44042/",
 	"diagnostics": "",
 	"clusterId": 1583329691976,
 	"applicationType": "TEZ",
