@@ -1,0 +1,61 @@
+odate=$1
+country=$2
+timestamp=`date '+%H%M%S'`
+env=prod
+
+log_file=${OCIR_HOME}/hdpcf/bin/MyUseCase/logs/Trade_Volume_${country}_${odate}_${timestamp}.log
+config_path=${OCIR_HOME}/hdpcf/bin/MyUseCase/scripts
+cat /dev/null > $log_file
+
+
+#------------------ Loading connection.conf file ------------------------#
+. $config_path/MYUSECASE_PROPERTIES.txt
+. $config_path/connection.conf
+
+
+if [ $? -ne 0 ]
+then
+	echo "$(date +%Y_%m_%d~%H:%M:%S) Error : Loading connection.conf file. So Quitting the job..." >> $log_file
+	exit 1
+	else
+	echo "$(date +%Y_%m_%d~%H:%M:%S) Info : Loaded connection.conf file  successfully..." >> $log_file
+fi
+
+num_executors="5"
+executor_cores="5"
+executor_memory="10G"
+driver_mem="12G"
+driver_crs="5"
+
+if [[ $env = 'dev' ]]; then
+queue="sgz1-ocirapp-haas_dev"
+elif [[ $env = 'sit' ]]; then
+queue="sgz1-ocirapp-haas_sit"
+else
+queue="sgz1-ocir_global_all_edmp_batchuser_fullaccess"
+fi
+
+#------------------ Loading Runtime parameters ------------------------#
+COUNTRY=`echo $COUNTRY | tr '[:lower:]' '[:upper:]'`
+odate=`date --date "${odate}-1 days" +'%Y%m%d'`
+o_date=`echo "$odate" | awk '{ print substr($0,1,4)"_"substr($0,5,2)"_"substr($0,7,2) }'`  #2019_06_15  
+o_date_otp=`echo "$odate" | awk '{ print substr($0,1,4)"-"substr($0,5,2)"-"substr($0,7,2) }'`  #2019-06-15 
+ccy_date=`echo "$odate" | awk '{ print substr($0,7,2)"/"substr($0,5,2)"/"substr($0,3,2) }'`  #2019-06-15 
+
+
+
+query2="INSERT OVERWRITE TABLE t3_ocir_open.ocir_DTP_TRADE_VOLUME_dremio partition(process_date,Data_src,source_country_code) select * from t3_ocir_open.ocir_DTP_TRADE_VOLUME where PROCESS_DATE='${o_date_otp}' and DATA_SRC='DTP' and SOURCE_COUNTRY_CODE='MY'"
+
+export SPARK_MAJOR_VERSION=2
+
+echo "spark-shell --master yarn --name 'Trade Volume Load2' --num-executors ${num_executors} --executor-cores ${executor_cores} --executor-memory ${executor_memory} --driver-memory ${driver_mem} --driver-cores ${driver_crs} --queue ${queue}  -i $config_path/ocir_query_execute.scala --conf spark.driver.args='${query2}'"
+
+spark-shell --master yarn --name "Trade Volume Load2" --num-executors ${num_executors} --executor-cores ${executor_cores} --executor-memory ${executor_memory} --driver-memory ${driver_mem} --driver-cores ${driver_crs} --queue ${queue}  -i $config_path/ocir_query_execute.scala --conf spark.driver.args="${query2}" >> $log_file 2>&1 
+
+if [ $? -ne 0 ]
+      then
+        echo "$(date +%Y_%m_%d~%H:%M:%S) Error : Loading ocir_DTP_TRADE_VOLUME_dremio is not successful, so exiting" >> $log_file 2>&1
+	exit 1
+ 	else
+        echo "$(date +%Y_%m_%d~%H:%M:%S) Info : Loading ocir_DTP_TRADE_VOLUME_dremio succeeded" >> $log_file
+fi
