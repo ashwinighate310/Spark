@@ -1,4 +1,10 @@
-#!/bin/ksh
+#!/bin/sh
+source ~/.bashrc
+#==============================================================================================================
+# Script Arguments: sh viewCreation.sh <TableLisFile> <SourceDatabase> <DestinationDataBase> <env> <country>
+# 
+#============================================================================================================================
+
 
 function errorHandler
 {
@@ -62,6 +68,13 @@ country=$5
 DATE=`date +%Y-%m-%d`
 timestamp=`date +%Y%m%d_%H%M%S`
 
+##
+## checkfor beeline
+##
+#Beeline parameters
+#. ${HOME}/bin/rep/connection.conf
+#BEELINE_CONN=$(eval echo \$CONNECTION_${env})
+export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Djline.terminal=jline.UnsupportedTerminal"
 #Environment Path
 log_path=${HOME}/work/report/logs
 file_path=${HOME}/work/report
@@ -83,6 +96,7 @@ drop_masked_view_list=drop_masked_view_${table_list_file}
 mask_file=${table_list_file}_maskfile
 hql_mask_file=maskviewCreation_${table_list_file}_${timestamp}.hql
 
+
 #echo ${parameters} > ${file_path}/${hql_file}
 > ${column_list}
 > ${file_path}/${hql_file}
@@ -95,7 +109,7 @@ writeLog "======================================================================
 writeLog "INFO : " "Preparing query to fetch column list from the sources"
 
 #remove when running with beeline
-echo "set hive.cli.print.header=true;" >> ${file_path}/${column_list}
+#echo "set hive.cli.print.header=true;" >> ${column_list}
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	echo "drop view if exists $destination_dataBase.${line}_full_vw;" >> ${file_path}/${drop_view_list}
 	echo "drop view if exists $destination_dataBase.${line}_masked_vw;" >> ${file_path}/${drop_masked_view_list}
@@ -107,8 +121,7 @@ writeLog " " " "
 writeLog "==============================================================================" 
 writeLog "INFO : " "Running query to drop already existing full views"
 
-#${BEELINE_CONN} --outputformat=tsv2 -f ${file_path}/${drop_view_list} 2>> ${log_file}
-hive -f ${file_path}/${drop_view_list} 2>> ${log_file}
+ocir_beeline --outputformat=tsv2 -f ${file_path}/${drop_view_list} 2>> ${log_file}
 #hive -f ${file_path}/${drop_view_list} 2>> ${log_file}
 
 hiveStatus=$?
@@ -119,8 +132,8 @@ writeLog " " " "
 writeLog "==============================================================================" 
 writeLog "INFO : " "Running query to fetch column list from the sources"
 
-#${BEELINE_CONN} --outputformat=tsv2 -f ${file_path}/${column_list} > ${file_path}/${column_result} 2>> ${log_file}
-hive -f ${file_path}/${column_list} > ${file_path}/${column_result} 2>> ${log_file}
+ocir_beeline --outputformat=tsv2 -f ${file_path}/${column_list} > ${file_path}/${column_result} 2>> ${log_file}
+#hive -f ${file_path}/${column_list} > ${file_path}/${column_result} 2>> ${log_file}
 hiveStatus=$?
 errorHandler ${hiveStatus} "There is an issue while fetching column from ${source_database}" "Fetching column from ${source_database} database complete successfully"
 
@@ -144,8 +157,8 @@ writeLog " " " "
 writeLog "==============================================================================" 
 writeLog "INFO : " "Running query to create full views"
 
-#${BEELINE_CONN} --outputformat=tsv2 -f ${file_path}/${hql_file} 2>> ${log_file}
-hive -f ${file_path}/${hql_file} 2>> ${log_file}
+ocir_beeline --outputformat=tsv2 -f ${file_path}/${hql_file} 2>> ${log_file}
+#hive -f ${file_path}/${hql_file} 2>> ${log_file}
 hiveStatus=$?
 errorHandler ${hiveStatus} "There is an issue while creating full views" "Full view creation completed successfully"
 
@@ -154,8 +167,8 @@ writeLog " " " "
 writeLog "==============================================================================" 
 writeLog "INFO : " "Running query to drop already existing masked views"
 
-#${BEELINE_CONN} --outputformat=tsv2 -f ${file_path}/${drop_masked_view_list} 2>> ${log_file}
-hive -f ${file_path}/${drop_masked_view_list} 2>> ${log_file}
+ocir_beeline --outputformat=tsv2 -f ${file_path}/${drop_masked_view_list} 2>> ${log_file}
+#hive -f ${file_path}/${drop_masked_view_list} 2>> ${log_file}
 
 hiveStatus=$?
 errorHandler ${hiveStatus} "There is an issue while dropping existing views" "Dropping existing view from $destination_dataBase completed successfully" 
@@ -183,8 +196,8 @@ writeLog " " " "
 writeLog "==============================================================================" 
 writeLog "INFO : " "Running query to create masked views"
 
-#${BEELINE_CONN} --outputformat=tsv2 -f ${file_path}/${hql_mask_file} 2>> ${log_file}
-hive -f ${file_path}/${hql_mask_file} 2>> ${log_file}
+ocir_beeline --outputformat=tsv2 -f ${file_path}/${hql_mask_file} 2>> ${log_file}
+#hive -f ${file_path}/${hql_mask_file} 2>> ${log_file}
 
 hiveStatus=$?
 errorHandler ${hiveStatus} "There is an issue while creating masked views" "Masked view creation completed successfully"
